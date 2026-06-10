@@ -3,40 +3,482 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Real Estate | ألفا العقارية</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ALPHA ESTATE - ألفا العقارية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #0B0C10;
+            --secondary-dark: #1F2833;
+            --accent-gold: #C5A880;
+            --accent-gold-hover: #B3956B;
+            --text-light: #F4F4F6;
+            --text-muted: #A3A8B4;
+            --pure-white: #FFFFFF;
+            --card-bg: #151A22;
+            --border-color: #2C3540;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* الهيدر وشريط التنقل */
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(11,12,16,0.8), transparent);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--pure-white);
+        }
+        .logo span {
+            color: var(--accent-gold);
+        }
+
+        .nav-tools {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .lang-btn, .admin-btn {
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .lang-btn:hover, .admin-btn:hover {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+        }
+
+        /* الواجهة الترحيبية الـ Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.75)), url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            color: var(--pure-white);
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            font-weight: 300;
+        }
+
+        .cta-btn {
+            background-color: var(--accent-gold);
+            color: var(--primary-dark);
+            padding: 12px 35px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(197, 168, 128, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-btn:hover {
+            background-color: var(--accent-gold-hover);
+            transform: translateY(-2px);
+        }
+
+        /* شريط فلاتر البحث المتقدمة */
+        .search-container {
+            background-color: var(--secondary-dark);
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 1000px;
+            margin: -50px auto 50px auto;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .search-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .search-field label {
+            font-size: 13px;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .search-field select, .search-field input {
+            background-color: var(--primary-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            padding: 10px;
+            border-radius: 4px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        /* شاشة عرض شبكة العقارات */
+        .properties-section {
+            padding: 10px 5% 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h2 {
+            font-size: 32px;
+            color: var(--pure-white);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent-gold);
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .property-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+        }
+
+        .property-img {
+            position: relative;
+            height: 220px;
+            width: 100%;
+            background-color: #333;
+        }
+
+        .property-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .property-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--accent-gold);
+            color: var(--primary-dark);
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 4px;
+        }
+
+        .property-details {
+            padding: 20px;
+        }
+
+        .property-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+        }
+
+        .property-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--pure-white);
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .property-location {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .property-features {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .property-features span i {
+            color: var(--accent-gold);
+            margin-left: 5px;
+        }
+
+        footer {
+            background-color: var(--secondary-dark);
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid var(--border-color);
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* دعم التبديل للاتجاه اللغوي الأجنبي */
+        html[dir="ltr"] body { text-align: left; }
+        html[dir="ltr"] .property-tag { left: 15px; right: auto; }
+        html[dir="ltr"] .property-features span i { margin-right: 5px; margin-left: 0; }
+    </style>
 </head>
 <body>
 
-    <div id="intro-screen">
-        <div class="intro-content">
-            <h1 class="intro-logo">ALPHA <span>REAL ESTATE</span></h1>
-            <p class="intro-sub">نستثمر في المستقبل.. نبني الواقع</p>
+    <header>
+        <div class="logo" id="logoText">ALPHA<span>ESTATE</span></div>
+        <div class="nav-tools">
+            <button class="lang-btn" id="langToggle" onclick="toggleLanguage()">EN</button>
+            <a href="admin.html" class="admin-btn"><i class="fa-solid fa-lock"></i> لوحة التحكم</a>
         </div>
-    </div>
+    </header>
 
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">ALPHA<span>ESTATE</span></div>
-            <ul class="nav-links" id="nav-menu">
-                <li><a href="#home" class="active" data-lang-ar="الرئيسية" data-lang-en="Home">الرئيسية</a></li>
-                <li><a href="#properties" data-lang-ar="العقارات" data-lang-en="Properties">العقارات</a></li>
-                <li><a href="#about" data-lang-ar="من نحن" data-lang-en="About Us">من نحن</a></li>
-                <li><a href="#contact" data-lang-ar="اتصل بنا" data-lang-en="Contact">اتصل بنا</a></li>
-            </ul>
-            <button id="lang-toggle" onclick="toggleLanguage()">EN</button>
-        </div>
-    </nav>
-
-    <section id="home" class="hero-section">
-        <div class="hero-overlay"></div>
+    <section class="hero" id="heroBg">
         <div class="hero-content">
-            <h2 id="hero-title" data-lang-ar="ابحث عن منزل أحلامك واستثمر بذكاء" data-lang-en="Find Your Dream Home & Invest Wisely">ابحث عن منزل أحلامك واستثمر بذكاء</h2>
-            <p id="hero-desc" data-lang-ar="نقدم لك أرقى المجمعات السكنية والعقارات الاستثمارية في العراق والخليج بأعلى معايير الجودة." data-lang-en="We offer the finest residential complexes and investment properties with the highest standards of quality.">نقدم لك أرقى المجمعات السكنية والعقارات الاستثمارية في العراق والخليج بأعلى معايير الجودة.</p>
-            <a href="#properties" class="btn-primary" id="hero-btn" data-lang-ar="تصفح المشاريع الحالية" data-lang-en="Explore Projects">تصفح المشاريع الحالية</a>
+            <h1 id="heroTitle">ابحث عن منزل أحلامك واستثمر بذكاء</h1>
+            <p id="heroDesc">نقدم لك أرقى المجمعات السكنية والعقارات الاستثمارية في العراق والخليج بأعلى معايير الجودة الفاخرة.</p>
+            <a href="#properties" class="cta-btn" id="heroBtn">تصفح المشاريع الحالية</a>
         </div>
     </section>
 
-    <script src="script.js"></script>
+    <div class="search-container">
+        <div class="search-grid">
+            <div class="search-field">
+                <label id="lblLocation">الموقع</label>
+                <select id="filterLocation" onchange="filterProperties()">
+                    <option value="all">كل المدن / All</option>
+                    <option value="بغداد">بغداد</option>
+                    <option value="أربيل">أربيل</option>
+                    <option value="دبي">دبي</option>
+                    <option value="البصرة">البصرة</option>
+                </select>
+            </div>
+            <div class="search-field">
+                <label id="lblType">النوع</label>
+                <select id="filterType" onchange="filterProperties()">
+                    <option value="all">كل الأنواع / All</option>
+                    <option value="فيلا">فيلا</option>
+                    <option value="شقة">شقة</option>
+                    <option value="بنتهاوس">بنتهاوس</option>
+                </select>
+            </div>
+            <div class="search-field">
+                <label id="lblPrice">الحد الأقصى للسعر (دولار)</label>
+                <input type="number" id="filterPrice" placeholder="مثال: 500000" oninput="filterProperties()">
+            </div>
+        </div>
+    </div>
+
+    <section class="properties-section" id="properties">
+        <div class="section-header">
+            <h2 id="sectionTitle">المشاريع المتاحة</h2>
+        </div>
+        <div class="properties-grid" id="propertiesGrid">
+            </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 ALPHA ESTATE. All Rights Reserved. Designed for Professional Excellence.</p>
+    </footer>
+
+    <script>
+        // الـ 7 عقارات الوهمية الاحترافية والكاملة التفاصيل
+        const defaultProperties = [
+            { id: 1, title: "فيلا رويال مودرن - الجادرية", location: "بغداد", type: "فيلا", price: 450000, space: "400م²", beds: 5, baths: 4, image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=600&q=80" },
+            { id: 2, title: "شقة تاورز فاخرة - عينكاوة", location: "أربيل", type: "شقة", price: 185000, space: "180م²", beds: 3, baths: 2, image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=80" },
+            { id: 3, title: "بنتهاوس إطلالة مارينا كاملة", location: "دبي", type: "بنتهاوس", price: 920000, space: "550م²", beds: 4, baths: 5, image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" },
+            { id: 4, title: "فيلا كلاسيك مع مسبح أولمبي", location: "البصرة", type: "فيلا", price: 380000, space: "600م²", beds: 6, baths: 6, image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" },
+            { id: 5, title: "شقة ديلوكس سمارت - المنصور", location: "بغداد", type: "شقة", price: 210000, space: "220م²", beds: 3, baths: 3, image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=80" },
+            { id: 6, title: "شقة بإطلالة على الجبل - القرية الإيطالية", location: "أربيل", type: "شقة", price: 145000, space: "160م²", beds: 2, baths: 2, image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=80" },
+            { id: 7, title: "فيلا الترا مودرن ذكية - حي بابل", location: "بغداد", type: "فيلا", price: 620000, space: "450م²", beds: 5, baths: 5, image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80" }
+        ];
+
+        let currentLang = "ar";
+
+        if (!localStorage.getItem('alpha_properties')) {
+            localStorage.setItem('alpha_properties', JSON.stringify(defaultProperties));
+        }
+
+        function loadProperties() {
+            const properties = JSON.parse(localStorage.getItem('alpha_properties'));
+            const grid = document.getElementById('propertiesGrid');
+            grid.innerHTML = "";
+
+            properties.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "property-card";
+                card.setAttribute('data-location', p.location);
+                card.setAttribute('data-type', p.type);
+                card.setAttribute('data-price', p.price);
+
+                card.innerHTML = `
+                    <div class="property-img">
+                        <img src="${p.image}" alt="${p.title}">
+                        <div class="property-tag">${currentLang === 'ar' ? p.type : translateType(p.type)}</div>
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$${p.price.toLocaleString()}</div>
+                        <div class="property-title">${p.title}</div>
+                        <div class="property-location">
+                            <i class="fa-solid fa-location-dot"></i> ${p.location}
+                        </div>
+                        <div class="property-features">
+                            <span><i class="fa-solid fa-maximize"></i> ${p.space}</span>
+                            <span><i class="fa-solid fa-bed"></i> ${p.beds} ${currentLang === 'ar' ? 'غرف' : 'Beds'}</span>
+                            <span><i class="fa-solid fa-bath"></i> ${p.baths} ${currentLang === 'ar' ? 'حمامات' : 'Baths'}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function translateType(type) {
+            if(type === "فيلا") return "Villa";
+            if(type === "شقة") return "Apartment";
+            return "Penthouse";
+        }
+
+        function filterProperties() {
+            const loc = document.getElementById('filterLocation').value;
+            const type = document.getElementById('filterType').value;
+            const maxPrice = parseFloat(document.getElementById('filterPrice').value) || Infinity;
+
+            const cards = document.querySelectorAll('.property-card');
+            cards.forEach(card => {
+                const cLoc = card.getAttribute('data-location');
+                const cType = card.getAttribute('data-type');
+                const cPrice = parseFloat(card.getAttribute('data-price'));
+
+                const matchLoc = (loc === "all" || cLoc === loc);
+                const matchType = (type === "all" || cType === type);
+                const matchPrice = (cPrice <= maxPrice);
+
+                if(matchLoc && matchType && matchPrice) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        function toggleLanguage() {
+            const html = document.documentElement;
+            if (currentLang === "ar") {
+                currentLang = "en";
+                html.setAttribute('dir', 'ltr');
+                html.setAttribute('lang', 'en');
+                document.getElementById('langToggle').innerText = "AR";
+                
+                document.getElementById('heroTitle').innerText = "Find Your Dream Home & Invest Wisely";
+                document.getElementById('heroDesc').innerText = "We offer you the finest residential complexes and investment real estate in Iraq & the Gulf with elite luxury standards.";
+                document.getElementById('heroBtn').innerText = "Browse Current Projects";
+                document.getElementById('sectionTitle').innerText = "Available Projects";
+                document.getElementById('lblLocation').innerText = "Location";
+                document.getElementById('lblType').innerText = "Property Type";
+                document.getElementById('lblPrice').innerText = "Max Price ($)";
+            } else {
+                currentLang = "ar";
+                html.setAttribute('dir', 'rtl');
+                html.setAttribute('lang', 'ar');
+                document.getElementById('langToggle').innerText = "EN";
+                
+                document.getElementById('heroTitle').innerText = "ابحث عن منزل أحلامك واستثمر بذكاء";
+                document.getElementById('heroDesc').innerText = "نقدم لك أرقى المجمعات السكنية والعقارات الاستثمارية في العراق والخليج بأعلى معايير الجودة الفاخرة.";
+                document.getElementById('heroBtn').innerText = "تصفح المشاريع الحالية";
+                document.getElementById('sectionTitle').innerText = "المشاريع المتاحة";
+                document.getElementById('lblLocation').innerText = "الموقع";
+                document.getElementById('lblType').innerText = "النوع";
+                document.getElementById('lblPrice').innerText = "الحد الأقصى للسعر (دولار)";
+            }
+            loadProperties();
+        }
+
+        window.onload = loadProperties;
+    </script>
 </body>
 </html>
