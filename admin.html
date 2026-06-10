@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALPHA ESTATE - لوحة الإشراف الآمنة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #0B0C10;
+            --secondary-dark: #1F2833;
+            --accent-gold: #C5A880;
+            --text-light: #F4F4F6;
+            --card-bg: #151A22;
+            --border-color: #2C3540;
+            --danger-red: #E74C3C;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--primary-dark); color: var(--text-light); padding: 30px 5%; }
+
+        /* شاشة تسجيل الدخول المقفلة لحمايتك */
+        .login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: var(--primary-dark); z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .login-box {
+            background-color: var(--card-bg); border: 1px solid var(--accent-gold);
+            padding: 40px; border-radius: 8px; text-align: center; max-width: 400px; width: 100%;
+        }
+        .login-box h3 { margin-bottom: 20px; color: var(--accent-gold); font-size: 22px;}
+        .login-box input {
+            width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 4px;
+            border: 1px solid var(--border-color); background-color: var(--primary-dark);
+            color: #fff; text-align: center; font-size: 16px; outline: none;
+        }
+        .login-box button {
+            background-color: var(--accent-gold); color: var(--primary-dark);
+            width: 100%; padding: 12px; border: none; font-weight: 700; border-radius: 4px; cursor: pointer;
+        }
+
+        .admin-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 40px;
+        }
+        .admin-header h1 { color: var(--accent-gold); font-size: 28px; }
+        .back-btn {
+            background-color: var(--secondary-dark); border: 1px solid var(--border-color);
+            color: #fff; padding: 8px 20px; text-decoration: none; border-radius: 4px; font-weight: 600;
+        }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: 1fr 1.8fr; gap: 40px;
+        }
+        @media(max-width: 900px){ .dashboard-grid { grid-template-columns: 1fr; } }
+
+        .form-panel {
+            background-color: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 25px; border-radius: 8px; height: fit-content;
+        }
+        .form-panel h2 { font-size: 20px; margin-bottom: 20px; color: var(--accent-gold); border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;}
+        
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .form-group label { font-size: 14px; color: var(--text-light); }
+        .form-group input, .form-group select {
+            padding: 10px; background-color: var(--primary-dark); border: 1px solid var(--border-color);
+            color: #fff; border-radius: 4px; outline: none;
+        }
+
+        .submit-btn {
+            background-color: var(--accent-gold); color: var(--primary-dark);
+            width: 100%; padding: 12px; border: none; font-weight: 700; border-radius: 4px; cursor: pointer; font-size: 16px;
+        }
+
+        .table-panel {
+            background-color: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 25px; border-radius: 8px; overflow-x: auto;
+        }
+        .table-panel h2 { font-size: 20px; margin-bottom: 20px; color: var(--accent-gold); }
+
+        table { width: 100%; border-collapse: collapse; text-align: right; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); }
+        th { color: var(--accent-gold); font-weight: 600; background-color: var(--secondary-dark); }
+        
+        .delete-btn {
+            background-color: var(--danger-red); color: white; border: none;
+            padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <h3>بوابة الإشراف الآمنة لقفل التعديلات</h3>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">ادخل الرمز السري الخاص بك لإتاحة الإضافة والحذف</p>
+            <input type="password" id="secretKey" placeholder="أدخل الرمز السري">
+            <button onclick="checkAuth()">دخول اللوحة</button>
+            <p id="loginError" style="color: var(--danger-red); font-size: 14px; margin-top: 10px; display: none;">الرمز السري غير صحيح!</p>
+        </div>
+    </div>
+
+    <div class="admin-header">
+        <h1>لوحة تحكم ALPHA ESTATE 🛠️</h1>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> العودة للموقع الرئيسي</a>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="form-panel">
+            <h2>إضافة عقار استثماري جديد</h2>
+            <form id="addPropertyForm" onsubmit="addProperty(event)">
+                <div class="form-group">
+                    <label>عنوان العقار</label>
+                    <input type="text" id="pTitle" placeholder="مثال: فيلا رويال فاخرة" required>
+                </div>
+                <div class="form-group">
+                    <label>المدينة / الموقع</label>
+                    <select id="pLocation">
+                        <option value="بغداد">بغداد</option>
+                        <option value="أربيل">أربيل</option>
+                        <option value="دبي">دبي</option>
+                        <option value="البصرة">البصرة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>نوع العقار</label>
+                    <select id="pType">
+                        <option value="فيلا">فيلا</option>
+                        <option value="شقة">شقة</option>
+                        <option value="بنتهاوس">بنتهاوس</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>السعر بالدولار ($)</label>
+                    <input type="number" id="pPrice" placeholder="مثال: 320000" required>
+                </div>
+                <div class="form-group">
+                    <label>المساحة</label>
+                    <input type="text" id="pSpace" placeholder="250م²" required>
+                </div>
+                <div class="form-group">
+                    <label>عدد الغرف</label>
+                    <input type="number" id="pBeds" value="3" required>
+                </div>
+                <div class="form-group">
+                    <label>عدد الحمامات</label>
+                    <input type="number" id="pBaths" value="2" required>
+                </div>
+                <div class="form-group">
+                    <label>رابط صورة العقار</label>
+                    <input type="text" id="pImage" placeholder="ضع رابط الصورة هنا" required>
+                </div>
+                <button type="submit" class="submit-btn">نشر العقار فوراً على الموقع</button>
+            </form>
+        </div>
+
+        <div class="table-panel">
+            <h2>العقارات الحالية في قاعدة البيانات</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>العقار</th>
+                        <th>الموقع</th>
+                        <th>السعر</th>
+                        <th>التحكم</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // الرمز السري الافتراضي لدخول اللوحة هو: admin
+        // يمكنك تعديل كلمة "admin" بالأسفل لأي رمز سري يعجبك لحماية إضافية
+        const MASTER_PASSWORD = "admin"; 
+
+        function checkAuth() {
+            const key = document.getElementById('secretKey').value;
+            if(key === MASTER_PASSWORD) {
+                document.getElementById('loginOverlay').style.display = 'none';
+                sessionStorage.setItem('alpha_auth', 'true');
+                renderAdminTable();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        if(sessionStorage.getItem('alpha_auth') === 'true') {
+            document.getElementById('loginOverlay').style.display = 'none';
+        }
+
+        function renderAdminTable() {
+            const properties = JSON.parse(localStorage.getItem('alpha_properties')) || [];
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = "";
+
+            properties.forEach((p, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${p.title}</td>
+                    <td>${p.location} - ${p.type}</td>
+                    <td style="color: var(--accent-gold); font-weight:700;">$${p.price.toLocaleString()}</td>
+                    <td>
+                        <button class="delete-btn" onclick="deleteProperty(${index})"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addProperty(e) {
+            e.preventDefault();
+            const properties = JSON.parse(localStorage.getItem('alpha_properties')) || [];
+
+            const newProp = {
+                id: Date.now(),
+                title: document.getElementById('pTitle').value,
+                location: document.getElementById('pLocation').value,
+                type: document.getElementById('pType').value,
+                price: parseFloat(document.getElementById('pPrice').value),
+                space: document.getElementById('pSpace').value,
+                beds: parseInt(document.getElementById('pBeds').value),
+                baths: parseInt(document.getElementById('pBaths').value),
+                image: document.getElementById('pImage').value
+            };
+
+            properties.push(newProp);
+            localStorage.setItem('alpha_properties', JSON.stringify(properties));
+            
+            renderAdminTable();
+            document.getElementById('addPropertyForm').reset();
+            alert('تم الحفظ ونشر العقار! اذهب للموقع لتجده قد ظهر في واجهة الزوار فوراً.');
+        }
+
+        function deleteProperty(index) {
+            if(confirm('هل تريد حذف هذا العقار نهائياً من العرض؟')) {
+                const properties = JSON.parse(localStorage.getItem('alpha_properties')) || [];
+                properties.splice(index, 1);
+                localStorage.setItem('alpha_properties', JSON.stringify(properties));
+                renderAdminTable();
+            }
+        }
+
+        window.onload = function() {
+            if(sessionStorage.getItem('alpha_auth') === 'true') {
+                renderAdminTable();
+            }
+        }
+    </script>
+</body>
+</html>
